@@ -58,3 +58,10 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+/NodeRunner/Assets/Mech_Constructor_Vehicles
+/NodeRunner/Library
+/NodeRunner/Logs
+/NodeRunner/obj
+/NodeRunner/Packages
+/NodeRunner/UserSettings
+/NodeRunner/.vsconfig
