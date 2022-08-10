@@ -29,7 +29,7 @@ public class CakeDecorationManager : MonoBehaviour
     {
         Vector3 touchPoint = Vector3.zero;
 
-        if (!Touch(ref touchPoint))
+        if (!TouchDown(ref touchPoint))
         {
             return false;
         }
@@ -54,9 +54,20 @@ public class CakeDecorationManager : MonoBehaviour
         return false;
     }
 
+    public static bool TouchDown(ref Vector3 touchPoint)
+    {
+        bool clickum = (Input.touches.Length > 0 && Input.touches[0].phase == UnityEngine.TouchPhase.Began) || Input.GetMouseButtonDown(0);
+        touchPoint = Input.mousePosition;
+        if (Input.touches.Length > 0)
+        {
+            touchPoint = Input.touches[0].position;
+        }
+        return clickum;
+    }
+
     public static bool Touch(ref Vector3 touchPoint)
     {
-        bool clickum = Input.touches.Length > 0 || Input.GetMouseButtonDown(0);
+        bool clickum = Input.touches.Length > 0 || Input.GetMouseButton(0);
         touchPoint = Input.mousePosition;
         if (Input.touches.Length > 0)
         {
@@ -72,7 +83,8 @@ public class CakeDecorationManager : MonoBehaviour
             return;
         }
         Vector3 touchPoint = Vector3.zero;
-        if(Touch(ref touchPoint))
+        
+        if(TouchDown(ref touchPoint))
         {
             RaycastHit hit;
             Ray ray = m_mainCamera.ScreenPointToRay(Input.mousePosition);
@@ -154,7 +166,8 @@ public class CakeDecorationManager : MonoBehaviour
                 }
             }
         }
-        else if (Input.GetMouseButtonUp(0))
+        //else if (Input.GetMouseButtonUp(0))
+        else if(Input.GetMouseButtonUp(0) || (Input.touches.Length > 0 && Input.touches[0].phase == UnityEngine.TouchPhase.Ended))
         {
             
             if (m_chipkuCheezUnderMouse != null)

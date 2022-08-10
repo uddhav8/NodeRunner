@@ -5,6 +5,7 @@ using UnityEngine;
 public class Thruster : MonoBehaviour
 {
     // Public //
+    public Collider m_collider;
     [Range(0f, 1000f)]
     public float m_thrustFactor = 100f;
     public float m_thrustMultiplier = 100f;
@@ -27,7 +28,7 @@ public class Thruster : MonoBehaviour
         Sensor.AllActive = set;
     }
 
-    private void Awake()
+    private void OnEnable()
     {
         m_car = GetComponentInParent<StupidCar>();
         if(m_car == null)
@@ -59,6 +60,8 @@ public class Thruster : MonoBehaviour
             return;
         }
 
+        if(m_collider != null)
+            m_collider.enabled = false;
         m_triggered -= Time.fixedDeltaTime;
 
         if(m_triggered <= 0f)

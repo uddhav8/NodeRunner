@@ -6,6 +6,7 @@ public class Sensor : MonoBehaviour
 {
     // Public //
     public static bool AllActive = false;
+    public Collider m_collider;
     public Thruster m_thruster;
     public Transform m_range;
     public LayerMask m_layerMask;
@@ -24,6 +25,8 @@ public class Sensor : MonoBehaviour
         {
             return;
         }
+        if(m_collider != null)
+            m_collider.enabled = false;
         Vector3 direction = m_range.position - transform.position;
         float distance = direction.magnitude;
 
