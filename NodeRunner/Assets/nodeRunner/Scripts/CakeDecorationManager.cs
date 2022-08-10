@@ -27,20 +27,42 @@ public class CakeDecorationManager : MonoBehaviour
 
     public static bool IsPointerOverUIObject()
     {
-        PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
-        eventDataCurrentPosition.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
-        List<RaycastResult> results = new List<RaycastResult>();
-        EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
-        //Debug.Log(results.Count);
+        Vector3 touchPoint = Vector3.zero;
 
-        for (int index = 0; index < results.Count; index++)
+        if (!Touch(ref touchPoint))
         {
-            RaycastResult curRaysastResult = results[index];
-            if (curRaysastResult.gameObject.layer == 5)
-                return true;
+            return false;
+        }
+        else
+        {
+
+            PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
+            //eventDataCurrentPosition.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+            eventDataCurrentPosition.position = new Vector3(touchPoint.x, touchPoint.y);
+            List<RaycastResult> results = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
+            //Debug.Log(results.Count);
+
+            for (int index = 0; index < results.Count; index++)
+            {
+                RaycastResult curRaysastResult = results[index];
+                if (curRaysastResult.gameObject.layer == 5)
+                    return true;
+            }
         }
 
         return false;
+    }
+
+    public static bool Touch(ref Vector3 touchPoint)
+    {
+        bool clickum = Input.touches.Length > 0 || Input.GetMouseButtonDown(0);
+        touchPoint = Input.mousePosition;
+        if (Input.touches.Length > 0)
+        {
+            touchPoint = Input.touches[0].position;
+        }
+        return clickum;
     }
 
     void Update()
@@ -49,8 +71,8 @@ public class CakeDecorationManager : MonoBehaviour
         {
             return;
         }
-
-        if (Input.GetMouseButtonDown(0))
+        Vector3 touchPoint = Vector3.zero;
+        if(Touch(ref touchPoint))
         {
             RaycastHit hit;
             Ray ray = m_mainCamera.ScreenPointToRay(Input.mousePosition);
@@ -163,15 +185,19 @@ public class CakeDecorationManager : MonoBehaviour
 
     void UpdateCheezUnderMouseDrag()
     {
+        Vector3 touchPoint = Vector3.zero;
         RaycastHit hit;
-        Ray ray = m_mainCamera.ScreenPointToRay(Input.mousePosition);
-        if (Physics.SphereCast(ray, m_spherecastRadius, out hit, 9999f, m_dragLayers.value))
+        if (Touch(ref touchPoint))
         {
-            m_chipkuCheezUnderMouse.transform.position = hit.point - ray.direction*m_chipkuCheezUnderMouse.m_radius;// ray.origin + ray.direction * hit.distance;
-        }
-        else
-        {
-            m_chipkuCheezUnderMouse.transform.position = ray.origin + ray.direction * m_initialDisWhenChipkuCheezCameUnderMouse;
+            Ray ray = m_mainCamera.ScreenPointToRay(touchPoint);
+            if (Physics.SphereCast(ray, m_spherecastRadius, out hit, 9999f, m_dragLayers.value))
+            {
+                m_chipkuCheezUnderMouse.transform.position = hit.point - ray.direction * m_chipkuCheezUnderMouse.m_radius;// ray.origin + ray.direction * hit.distance;
+            }
+            else
+            {
+                m_chipkuCheezUnderMouse.transform.position = ray.origin + ray.direction * m_initialDisWhenChipkuCheezCameUnderMouse;
+            }
         }
     }
 }
